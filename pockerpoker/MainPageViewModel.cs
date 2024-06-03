@@ -11,52 +11,18 @@ namespace pockerpoker
 {
     internal partial class MainPageViewModel : BaseViewModel
     {
-        public MainPageViewModel() {
-            Console.WriteLine("MainPgeViewModel loaded!");
+        private Random rng = new Random();
 
-            OnCounterClickedCommand = new Command(
+        public MainPageViewModel() {
+            this.OnDealDrawBtnCommand = new Command(
                 execute: () =>
                 {
-                    OnCounterClicked();
+                    OnDealDrawBtnClicked();
                 },
                 canExecute: () =>
                 {
                     return true;
                 });
-        }
-
-        private string _headline = string.Empty;
-        public string Headline
-        {
-            get
-            {
-                return this._headline;
-            }
-            set
-            {
-                if (this._headline != value)
-                {
-                    this._headline = value;
-                    OnPropertyChanged(nameof(Headline));
-                }
-            }
-        }
-
-        private string _counterBtn = "click me!";
-        public string CounterBtn
-        {
-            get
-            {
-                return this._counterBtn;
-            }
-            set
-            {
-                if (this._counterBtn != value)
-                {
-                    this._counterBtn = value;
-                    OnPropertyChanged(nameof(CounterBtn));
-                }
-            }
         }
 
         private int _card1 = 0;
@@ -144,19 +110,32 @@ namespace pockerpoker
             }
         }
 
-        int count = 0;
-        public ICommand OnCounterClickedCommand { get; private set; }
-        [RelayCommand]
-        private void OnCounterClicked()
+        private string _dealDrawBtn = "Deal / Draw";
+        public string DealDrawBtn
         {
-            count++;
+            get
+            {
+                return this._dealDrawBtn;
+            }
+            set
+            {
+                if (this._dealDrawBtn != value)
+                {
+                    this._dealDrawBtn = value;
+                    OnPropertyChanged(nameof(DealDrawBtn));
+                }
+            }
+        }
 
-            if (count == 1)
-                CounterBtn = $"Clicked {count} time";
-            else
-                CounterBtn = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn);
+        public ICommand OnDealDrawBtnCommand { get; private set; }
+        [RelayCommand]
+        private void OnDealDrawBtnClicked()
+        {
+            Card1 = rng.Next(1, 52);
+            Card2 = rng.Next(1, 52);
+            Card3 = rng.Next(1, 52);
+            Card4 = rng.Next(1, 52);
+            Card5 = rng.Next(1, 52);
         }
     }
 }
