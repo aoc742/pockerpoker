@@ -7,12 +7,47 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a race car number eight" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
+                <Label Grid.Column="1" Text="Color Poker" Style="{StaticResource Headline}" />
+                <HorizontalStackLayout Grid.Column="2">
+                    <Label Text="Score: " Style="{StaticResource Headline}" />
+                    <Label Text="{Binding Score}" Style="{StaticResource Headline}" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <Grid HeightRequest="185">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray100}}">
+                    <Label Text="{Binding Card1}" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray100}}">
+                    <Label Text="{Binding Card2}" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Border Grid.Column="2" BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray100}}">
+                    <Label Text="{Binding Card3}" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Border Grid.Column="3" BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray100}}">
+                    <Label Text="{Binding Card4}" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Border Grid.Column="4" BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray100}}">
+                    <Label Text="{Binding Card5}" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+            
+                
             <Label
                 Text="{Binding Headline}"
                 Style="{StaticResource Headline}"

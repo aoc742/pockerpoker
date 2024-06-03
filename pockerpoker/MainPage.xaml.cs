@@ -8,7 +8,6 @@
         {
             InitializeComponent();
 
-            Console.WriteLine("Main Page has loaded");
             BindingContext = new MainPageViewModel();
         }
     }
