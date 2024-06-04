@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,12 @@ namespace pockerpoker
         private Random rng = new Random();
 
         public MainPageViewModel() {
+            // Create card deck
+            for (int i = 1; i <= 52; i++)
+            {
+                this.Deck.Add(new PlayingCardViewModel(i));
+            }
+
             this.OnDealDrawBtnCommand = new Command(
                 execute: () =>
                 {
@@ -23,10 +30,12 @@ namespace pockerpoker
                 {
                     return true;
                 });
+
+            OnDealDrawBtnClicked(); // Trigger start of game
         }
 
-        private int _card1 = 0;
-        public int Card1
+        private PlayingCardViewModel _card1 = new PlayingCardViewModel(1);
+        public PlayingCardViewModel Card1
         {
             get
             {
@@ -42,8 +51,8 @@ namespace pockerpoker
             }
         }
 
-        private int _card2 = 0;
-        public int Card2
+        private PlayingCardViewModel _card2 = new PlayingCardViewModel(1);
+        public PlayingCardViewModel Card2
         {
             get
             {
@@ -59,8 +68,8 @@ namespace pockerpoker
             }
         }
 
-        private int _card3 = 0;
-        public int Card3
+        private PlayingCardViewModel _card3 = new PlayingCardViewModel(1);
+        public PlayingCardViewModel Card3
         {
             get
             {
@@ -76,8 +85,8 @@ namespace pockerpoker
             }
         }
 
-        private int _card4 = 0;
-        public int Card4
+        private PlayingCardViewModel _card4 = new PlayingCardViewModel(1);
+        public PlayingCardViewModel Card4
         {
             get
             {
@@ -93,8 +102,8 @@ namespace pockerpoker
             }
         }
 
-        private int _card5 = 0;
-        public int Card5
+        private PlayingCardViewModel _card5 = new PlayingCardViewModel(1);
+        public PlayingCardViewModel Card5
         {
             get
             {
@@ -127,15 +136,32 @@ namespace pockerpoker
             }
         }
 
+        public ObservableCollection<PlayingCardViewModel> Deck { get; set; } = new ObservableCollection<PlayingCardViewModel>();
+
         public ICommand OnDealDrawBtnCommand { get; private set; }
         [RelayCommand]
         private void OnDealDrawBtnClicked()
         {
-            Card1 = rng.Next(1, 52);
-            Card2 = rng.Next(1, 52);
-            Card3 = rng.Next(1, 52);
-            Card4 = rng.Next(1, 52);
-            Card5 = rng.Next(1, 52);
+            this.Shuffle<PlayingCardViewModel>(this.Deck);
+
+            Card1 = this.Deck[0];
+            Card2 = this.Deck[1];
+            Card3 = this.Deck[2];
+            Card4 = this.Deck[3];
+            Card5 = this.Deck[4];
+        }
+
+        private void Shuffle<T>(IList<T> values)
+        {
+            int inputArrayLength = values.Count();
+
+            for (int i = inputArrayLength - 1; i > 0; i--)
+            {
+                int j = rng.Next(i + 1);
+                var temp = values[i];
+                values[i] = values[j];
+                values[j] = temp;
+            }
         }
     }
 }
