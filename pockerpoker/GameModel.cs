@@ -10,6 +10,7 @@ namespace pockerpoker
     {
         private List<PlayingCardModel> _deck = new List<PlayingCardModel>(); // 52 card deck
         private List<PlayingCardModel> _hand = new List<PlayingCardModel>(new PlayingCardModel[5]); // 5 card hand
+        private int _score = 0;
 
         private Random rng = new Random();
 
@@ -41,6 +42,12 @@ namespace pockerpoker
 
         public void Deal()
         {
+            // Upon dealing new hand, automatically bet 5 points for the user
+            this._score -= 5;
+            ScoreUpdated?.Invoke(this, new ScoreUpdatedEventArgs(){
+                Score = this._score
+            });
+
             this.Shuffle(this._deck);
             _hand[0] = _deck[0];
             _hand[1] = _deck[1];
@@ -59,6 +66,19 @@ namespace pockerpoker
             throw new NotImplementedException();
         }
 
+        public void CalculateScore()
+        {
+            // Royal Flush: 5000
+            // Straight Flush: 250
+            // 4 of a kind: 125
+            // Full House: 40
+            // Flush: 25
+            // Straight: 20
+            // 3 of a kind: 15
+            // 2 pair: 10
+            // Jacks or better: 5
+        }
+
         public void Reset()
         {
             throw new NotImplementedException();
@@ -69,6 +89,7 @@ namespace pockerpoker
             // TODO check for saved state. If exists, load it
 
             // Otherwise start a new game
+            this._score = 100; // Upon game over, add 100 points to the total to start over
         }
     }
 }
