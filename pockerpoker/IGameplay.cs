@@ -39,6 +39,6 @@ namespace pockerpoker
         void Deal();
 
         // Discard selected cards, draw new cards
-        void Draw(IEnumerable<PlayingCardModel> cardsToDiscard);
+        void Draw(IEnumerable<int> indicesOfCardsToDiscard);
     }
 }

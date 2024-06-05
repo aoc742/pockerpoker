@@ -61,9 +61,9 @@ namespace pockerpoker
             });
         }
 
-        public void Draw(IEnumerable<PlayingCardModel> cardsToDiscard)
+        public void Draw(IEnumerable<int> indicesOfCardsToDiscard)
         {
-            throw new NotImplementedException();
+
         }
 
         public void CalculateScore()
