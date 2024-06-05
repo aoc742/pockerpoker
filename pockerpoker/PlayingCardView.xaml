@@ -4,7 +4,7 @@
              x:Class="pockerpoker.PlayingCardView">
     <Grid>
         <Label 
-            Text="{Binding Id}"
+            Text="{Binding Name}"
             TextColor="{Binding CardTextColor}"
             FontSize="Header"
             VerticalOptions="Center" 

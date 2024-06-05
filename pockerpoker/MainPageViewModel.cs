@@ -12,14 +12,15 @@ namespace pockerpoker
 {
     internal partial class MainPageViewModel : BaseViewModel
     {
-        private Random rng = new Random();
+        private GameModel _gameModel;
+        public MainPageViewModel() 
+        {
+            _gameModel = new GameModel();
 
-        public MainPageViewModel() {
-            // Create card deck
-            for (int i = 1; i <= 52; i++)
-            {
-                this.Deck.Add(new PlayingCardViewModel(i));
-            }
+            _gameModel.CardsUpdated += _gameModel_CardsUpdated;
+            _gameModel.ScoreUpdated += _gameModel_ScoreUpdated;
+            _gameModel.WinObtained += _gameModel_WinObtained;
+
 
             this.OnDealDrawBtnCommand = new Command(
                 execute: () =>
@@ -31,10 +32,29 @@ namespace pockerpoker
                     return true;
                 });
 
-            OnDealDrawBtnClicked(); // Trigger start of game
+
         }
 
-        private PlayingCardViewModel _card1 = new PlayingCardViewModel(1);
+        private void _gameModel_WinObtained(object sender, WinObtainedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _gameModel_ScoreUpdated(object sender, ScoreUpdatedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _gameModel_CardsUpdated(object sender, CardsUpdatedEventArgs e)
+        {
+            Card1 = new PlayingCardViewModel(e.NewCards.ToList()[0]);
+            Card2 = new PlayingCardViewModel(e.NewCards.ToList()[1]);
+            Card3 = new PlayingCardViewModel(e.NewCards.ToList()[2]);
+            Card4 = new PlayingCardViewModel(e.NewCards.ToList()[3]);
+            Card5 = new PlayingCardViewModel(e.NewCards.ToList()[4]);
+        }
+
+        private PlayingCardViewModel _card1 = new PlayingCardViewModel(new PlayingCardModel(1));
         public PlayingCardViewModel Card1
         {
             get
@@ -51,7 +71,7 @@ namespace pockerpoker
             }
         }
 
-        private PlayingCardViewModel _card2 = new PlayingCardViewModel(1);
+        private PlayingCardViewModel _card2 = new PlayingCardViewModel(new PlayingCardModel(2));
         public PlayingCardViewModel Card2
         {
             get
@@ -68,7 +88,7 @@ namespace pockerpoker
             }
         }
 
-        private PlayingCardViewModel _card3 = new PlayingCardViewModel(1);
+        private PlayingCardViewModel _card3 = new PlayingCardViewModel(new PlayingCardModel(3));
         public PlayingCardViewModel Card3
         {
             get
@@ -85,7 +105,7 @@ namespace pockerpoker
             }
         }
 
-        private PlayingCardViewModel _card4 = new PlayingCardViewModel(1);
+        private PlayingCardViewModel _card4 = new PlayingCardViewModel(new PlayingCardModel(4));
         public PlayingCardViewModel Card4
         {
             get
@@ -102,7 +122,7 @@ namespace pockerpoker
             }
         }
 
-        private PlayingCardViewModel _card5 = new PlayingCardViewModel(1);
+        private PlayingCardViewModel _card5 = new PlayingCardViewModel(new PlayingCardModel(5));
         public PlayingCardViewModel Card5
         {
             get
@@ -136,32 +156,11 @@ namespace pockerpoker
             }
         }
 
-        public ObservableCollection<PlayingCardViewModel> Deck { get; set; } = new ObservableCollection<PlayingCardViewModel>();
-
         public ICommand OnDealDrawBtnCommand { get; private set; }
         [RelayCommand]
         private void OnDealDrawBtnClicked()
         {
-            this.Shuffle<PlayingCardViewModel>(this.Deck);
-
-            Card1 = this.Deck[0];
-            Card2 = this.Deck[1];
-            Card3 = this.Deck[2];
-            Card4 = this.Deck[3];
-            Card5 = this.Deck[4];
-        }
-
-        private void Shuffle<T>(IList<T> values)
-        {
-            int inputArrayLength = values.Count();
-
-            for (int i = inputArrayLength - 1; i > 0; i--)
-            {
-                int j = rng.Next(i + 1);
-                var temp = values[i];
-                values[i] = values[j];
-                values[j] = temp;
-            }
+            _gameModel.Deal();
         }
     }
 }
