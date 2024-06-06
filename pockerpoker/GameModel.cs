@@ -63,7 +63,7 @@ namespace pockerpoker
 
         private bool isFullHouse()
         {
-            return true;
+            return false;
         }
 
         private bool isFlush()
@@ -88,6 +88,14 @@ namespace pockerpoker
 
         private bool isJacksOrBetter()
         {
+            if (_hand.Count(card => card.GetCardNumber().Equals(CardNumber.Jack)) >= 2 ||
+                _hand.Count(card => card.GetCardNumber().Equals(CardNumber.Queen)) >= 2 ||
+                _hand.Count(card => card.GetCardNumber().Equals(CardNumber.King)) >= 2 ||
+                _hand.Count(card => card.GetCardNumber().Equals(CardNumber.Ace)) >= 2
+                )
+            {
+                return true;
+            }
             return false;
         }
 
