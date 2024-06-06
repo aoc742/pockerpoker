@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace pockerpoker
 {
-    public class WinObtainedEventArgs : EventArgs
+    public class ResultsObtainedEventArgs : EventArgs
     {
+        public bool WinLoss { get; set; } // Win = True, Loss = False
         public IEnumerable<PlayingCardModel> WinningCards { get; set; } = new List<PlayingCardModel>();
     }
 
@@ -19,17 +20,18 @@ namespace pockerpoker
     public class ScoreUpdatedEventArgs : EventArgs
     {
         public int Score { get; set; }
+        public int ScoreChange { get; set; }
     }
 
     public delegate void CardsUpdatedEventHandler(Object sender, CardsUpdatedEventArgs e);
     public delegate void ScoreUpdatedEventHandler(Object sender, ScoreUpdatedEventArgs e);
-    public delegate void WinObtainedEventHandler(Object sender, WinObtainedEventArgs e);
+    public delegate void ResultsObtainedEventHandler(Object sender, ResultsObtainedEventArgs e);
 
     public interface IGameplay
     {
         public event CardsUpdatedEventHandler CardsUpdated;
         public event ScoreUpdatedEventHandler ScoreUpdated;
-        public event WinObtainedEventHandler WinObtained;
+        public event ResultsObtainedEventHandler ResultsObtained;
 
         void Start();
 

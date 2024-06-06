@@ -48,18 +48,91 @@
                 </Border>
             </Grid>
 
+            <Grid HeightRequest="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-            <Label
-                Text="{Binding Headline}"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+                <Label Grid.Column="0" Text="" FontSize="Large" TextColor="White" HorizontalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard1}" Value="true">
+                            <Setter Property="Text" Value="Hold" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard1}" Value="false">
+                            <Setter Property="Text" Value="" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Grid.Column="1" Text="" FontSize="Large" TextColor="White" HorizontalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard2}" Value="true">
+                            <Setter Property="Text" Value="Hold" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard2}" Value="false">
+                            <Setter Property="Text" Value="" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Grid.Column="2" Text="" FontSize="Large" TextColor="White" HorizontalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard3}" Value="true">
+                            <Setter Property="Text" Value="Hold" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard3}" Value="false">
+                            <Setter Property="Text" Value="" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Grid.Column="3" Text="" FontSize="Large" TextColor="White" HorizontalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard4}" Value="true">
+                            <Setter Property="Text" Value="Hold" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard4}" Value="false">
+                            <Setter Property="Text" Value="" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Grid.Column="4" Text="" FontSize="Large" TextColor="White" HorizontalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard5}" Value="true">
+                            <Setter Property="Text" Value="Hold" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HoldCard5}" Value="false">
+                            <Setter Property="Text" Value="" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </Grid>
+            
+            <Grid HeightRequest="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Text="click to hold" Command="{Binding HoldCard1BtnCommand}" HorizontalOptions="Fill" />
+                <Button Grid.Column="1" Text="click to hold" Command="{Binding HoldCard2BtnCommand}" HorizontalOptions="Fill" />
+                <Button Grid.Column="2" Text="click to hold" Command="{Binding HoldCard3BtnCommand}" HorizontalOptions="Fill" />
+                <Button Grid.Column="3" Text="click to hold" Command="{Binding HoldCard4BtnCommand}" HorizontalOptions="Fill" />
+                <Button Grid.Column="4" Text="click to hold" Command="{Binding HoldCard5BtnCommand}" HorizontalOptions="Fill" />
+            </Grid>
 
             <Button
                 x:Name="DealDrawBtn"
                 Text="{Binding DealDrawBtn}" 
                 Command="{Binding OnDealDrawBtnCommand}"
-                SemanticProperties.Hint="Counts the number of times you click"
                 HorizontalOptions="Fill" />
+
+            <Label Text="{Binding WinLoss}" FontSize="Large" /> 
+            <Label Text="{Binding ScoreChange}" FontSize="Large" />
         </VerticalStackLayout>
     </ScrollView>
 

@@ -16,7 +16,7 @@ namespace pockerpoker
 
         public event CardsUpdatedEventHandler? CardsUpdated;
         public event ScoreUpdatedEventHandler? ScoreUpdated;
-        public event WinObtainedEventHandler? WinObtained;
+        public event ResultsObtainedEventHandler? ResultsObtained;
 
         public GameModel()
         {
@@ -25,6 +25,65 @@ namespace pockerpoker
             {
                 this._deck.Add(new PlayingCardModel(i));
             }
+        }
+
+        private bool isRoyalFlush()
+        {
+            return false; 
+        }
+
+        private bool isStraightFlush()
+        {
+            return false;
+        }
+
+        private bool is4OfAKind()
+        {  
+            return false; 
+        }
+
+        private bool isFullHouse()
+        {
+            return true;
+        }
+
+        private bool isFlush()
+        {
+            return false;
+        }
+
+        private bool isStraight()
+        {
+            return false;
+        }
+
+        private bool is3OfAKind()
+        {
+            return false;
+        }
+
+        private bool is2Pair()
+        {
+            return false;
+        }
+
+        private bool isJacksOrBetter()
+        {
+            return false;
+        }
+
+        private int calculateScore()
+        {
+            if (isRoyalFlush())     return 5000;
+            if (isStraightFlush())  return 250;
+            if (is4OfAKind())       return 125;
+            if (isFullHouse())      return 40;
+            if (isFlush())          return 25;
+            if (isStraight())       return 20;
+            if (is3OfAKind())       return 15;
+            if (is2Pair())          return 10;
+            if (isJacksOrBetter())  return 5;
+                                    return 0;
         }
 
         private void Shuffle<T>(IList<T> values)
@@ -45,7 +104,8 @@ namespace pockerpoker
             // Upon dealing new hand, automatically bet 5 points for the user
             this._score -= 5;
             ScoreUpdated?.Invoke(this, new ScoreUpdatedEventArgs(){
-                Score = this._score
+                Score = this._score,
+                ScoreChange = 0
             });
 
             this.Shuffle(this._deck);
@@ -63,20 +123,34 @@ namespace pockerpoker
 
         public void Draw(IEnumerable<int> indicesOfCardsToDiscard)
         {
+            int nextDeckIndex = 5; // draw the next card in the shuffled deck
+            foreach(int index in indicesOfCardsToDiscard)
+            {
+                _hand[index] = _deck[nextDeckIndex];
+                ++nextDeckIndex;
+            }
 
+            CardsUpdated?.Invoke(this, new CardsUpdatedEventArgs()
+            {
+                NewCards = _hand
+            });
+
+            EndOfTurn();
         }
 
-        public void CalculateScore()
+        public void EndOfTurn()
         {
-            // Royal Flush: 5000
-            // Straight Flush: 250
-            // 4 of a kind: 125
-            // Full House: 40
-            // Flush: 25
-            // Straight: 20
-            // 3 of a kind: 15
-            // 2 pair: 10
-            // Jacks or better: 5
+            int scoreChange = calculateScore();
+            this._score += scoreChange;
+
+            ScoreUpdated?.Invoke(this, new ScoreUpdatedEventArgs() { Score = _score, ScoreChange = scoreChange });
+
+            // If not a winner
+            ResultsObtained?.Invoke(this, new ResultsObtainedEventArgs()
+            {
+                WinLoss = scoreChange > 0,
+            });
+
         }
 
         public void Reset()
@@ -90,6 +164,8 @@ namespace pockerpoker
 
             // Otherwise start a new game
             this._score = 100; // Upon game over, add 100 points to the total to start over
+            ScoreUpdated?.Invoke(this, new ScoreUpdatedEventArgs() { Score = _score, ScoreChange = 0 });
+
         }
     }
 }

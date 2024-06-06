@@ -19,7 +19,9 @@ namespace pockerpoker
 
             _gameModel.CardsUpdated += _gameModel_CardsUpdated;
             _gameModel.ScoreUpdated += _gameModel_ScoreUpdated;
-            _gameModel.WinObtained += _gameModel_WinObtained;
+            _gameModel.ResultsObtained += _gameModel_WinObtained;
+
+            _gameModel.Start();
 
 
             this.OnDealDrawBtnCommand = new Command(
@@ -32,17 +34,40 @@ namespace pockerpoker
                     return true;
                 });
 
-
+            this.HoldCard1BtnCommand = new RelayCommand(execute: () =>
+            {
+                HoldCard1BtnClicked();
+            }, canExecute: () => { return !toggleDealDraw; });
+            this.HoldCard2BtnCommand = new RelayCommand(execute: () =>
+            {
+                HoldCard2BtnClicked();
+            }, canExecute: () => { return !toggleDealDraw; });
+            this.HoldCard3BtnCommand = new RelayCommand(execute: () =>
+            {
+                HoldCard3BtnClicked();
+            }, canExecute: () => { return !toggleDealDraw; });
+            this.HoldCard4BtnCommand = new RelayCommand(execute: () =>
+            {
+                HoldCard4BtnClicked();
+            }, canExecute: () => { return !toggleDealDraw; });
+            this.HoldCard5BtnCommand = new RelayCommand(execute: () =>
+            {
+                HoldCard5BtnClicked();
+            }, canExecute: () => { return !toggleDealDraw; });
         }
 
-        private void _gameModel_WinObtained(object sender, WinObtainedEventArgs e)
+        private void _gameModel_WinObtained(object sender, ResultsObtainedEventArgs e)
         {
-            throw new NotImplementedException();
+            WinLoss = e.WinLoss ? "Win" : "Loss";
         }
 
         private void _gameModel_ScoreUpdated(object sender, ScoreUpdatedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.Score = e.Score;
+            if (e.ScoreChange > 0)
+            {
+                ScoreChange = $"Score change: {e.ScoreChange}";
+            }
         }
 
         private void _gameModel_CardsUpdated(object sender, CardsUpdatedEventArgs e)
@@ -52,6 +77,52 @@ namespace pockerpoker
             Card3 = new PlayingCardViewModel(e.NewCards.ToList()[2]);
             Card4 = new PlayingCardViewModel(e.NewCards.ToList()[3]);
             Card5 = new PlayingCardViewModel(e.NewCards.ToList()[4]);
+        }
+
+        // Represents how much the score changes after a round
+        private string _scoreChange = string.Empty;
+        public string ScoreChange
+        {
+            get
+            {
+                return _scoreChange;
+            }
+            set
+            {
+                _scoreChange = value;
+                OnPropertyChanged(nameof(ScoreChange));
+            }
+        }
+
+        private string _winLoss = string.Empty;
+        public string WinLoss
+        {
+            get
+            {
+                return _winLoss;
+            }
+            set
+            {
+                _winLoss = value;
+                OnPropertyChanged(nameof(WinLoss));
+            }
+        }
+
+        private int _score = 0;
+        public int Score
+        {
+            get
+            {
+                return _score;
+            }
+            set
+            {
+                if (_score != value)
+                {
+                    _score = value;
+                    OnPropertyChanged(nameof(Score));
+                }
+            }
         }
 
         private PlayingCardViewModel _card1 = new PlayingCardViewModel(new PlayingCardModel(1));
@@ -139,7 +210,7 @@ namespace pockerpoker
             }
         }
 
-        private string _dealDrawBtn = "Deal / Draw";
+        private string _dealDrawBtn = "Start";
         public string DealDrawBtn
         {
             get
@@ -156,11 +227,130 @@ namespace pockerpoker
             }
         }
 
+        private bool holdCard1 = false;
+        public bool HoldCard1
+        {
+            get
+            {
+                return holdCard1;
+            }
+            set
+            {
+                holdCard1 = value;
+                OnPropertyChanged(nameof(HoldCard1));
+            }
+        }
+        public ICommand HoldCard1BtnCommand { get; private set; }
+        private void HoldCard1BtnClicked()
+        {
+            HoldCard1 = !holdCard1;
+        }
+        private bool holdCard2 = false;
+        public bool HoldCard2
+        {
+            get
+            {
+                return holdCard2;
+            }
+            set
+            {
+                holdCard2 = value;
+                OnPropertyChanged(nameof(HoldCard2));
+            }
+        }
+
+        public ICommand HoldCard2BtnCommand { get; private set; }
+        private void HoldCard2BtnClicked()
+        {
+            HoldCard2 = !holdCard2;
+        }
+        private bool holdCard3 = false;
+        public bool HoldCard3
+        {
+            get
+            {
+                return holdCard3;
+            }
+            set
+            {
+                holdCard3 = value;
+                OnPropertyChanged(nameof(HoldCard3));
+            }
+        }
+
+        public ICommand HoldCard3BtnCommand { get; private set; }
+        private void HoldCard3BtnClicked()
+        {
+            HoldCard3 = !holdCard3;
+        }
+        private bool holdCard4 = false;
+        public bool HoldCard4
+        {
+            get
+            {
+                return holdCard4;
+            }
+            set
+            {
+                holdCard4 = value;
+                OnPropertyChanged(nameof(HoldCard4));
+            }
+        }
+
+        public ICommand HoldCard4BtnCommand { get; private set; }
+        private void HoldCard4BtnClicked()
+        {
+            HoldCard4 = !holdCard4;
+        }
+        private bool holdCard5 = false;
+        public bool HoldCard5
+        {
+            get
+            {
+                return holdCard5;
+            }
+            set
+            {
+                holdCard5 = value;
+                OnPropertyChanged(nameof(HoldCard5));
+            }
+        }
+        public ICommand HoldCard5BtnCommand { get; private set; }
+        private void HoldCard5BtnClicked()
+        {
+            HoldCard5 = !holdCard5;
+        }
+
+        private bool toggleDealDraw = true;
         public ICommand OnDealDrawBtnCommand { get; private set; }
         [RelayCommand]
         private void OnDealDrawBtnClicked()
         {
-            _gameModel.Deal();
+            if (toggleDealDraw)
+            {
+                _gameModel.Deal();
+                DealDrawBtn = "Draw";
+                WinLoss = "";
+                ScoreChange = "";
+            }
+            else
+            {
+                List<int> cardsToDiscard = new List<int>();
+                if (!holdCard1) cardsToDiscard.Add(0);
+                if (!holdCard2) cardsToDiscard.Add(1);
+                if (!holdCard3) cardsToDiscard.Add(2);
+                if (!holdCard4) cardsToDiscard.Add(3);
+                if (!holdCard5) cardsToDiscard.Add(4);
+                _gameModel.Draw(cardsToDiscard);
+                DealDrawBtn = "Deal";
+                HoldCard1 = HoldCard2 = HoldCard3 = HoldCard4 = HoldCard5 = false;
+            }
+            toggleDealDraw = !toggleDealDraw;
+            ((RelayCommand)HoldCard1BtnCommand).NotifyCanExecuteChanged();
+            ((RelayCommand)HoldCard2BtnCommand).NotifyCanExecuteChanged();
+            ((RelayCommand)HoldCard3BtnCommand).NotifyCanExecuteChanged();
+            ((RelayCommand)HoldCard4BtnCommand).NotifyCanExecuteChanged();
+            ((RelayCommand)HoldCard5BtnCommand).NotifyCanExecuteChanged();
         }
     }
 }
