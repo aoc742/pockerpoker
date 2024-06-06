@@ -58,6 +58,14 @@ namespace pockerpoker
 
         private bool is4OfAKind()
         {  
+            CardNumber firstCard = _hand[0].GetCardNumber();
+            CardNumber secondCard = _hand[1].GetCardNumber();
+            if (_hand.Count(card => card.CardNumber == firstCard) >= 4 ||
+                _hand.Count(card => card.CardNumber == secondCard) >= 4
+                )
+            {
+                return true;
+            }
             return false; 
         }
 
@@ -68,6 +76,10 @@ namespace pockerpoker
 
         private bool isFlush()
         {
+            CardSuit firstSuit = _hand[0].GetSuit();
+            if (_hand.All(card => card.GetSuit() == firstSuit)){
+                return true;
+            }
             return false;
         }
 
