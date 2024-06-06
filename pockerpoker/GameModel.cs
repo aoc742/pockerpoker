@@ -27,8 +27,27 @@ namespace pockerpoker
             }
         }
 
+        // Id numbers of the 5 cards in hand
+        private List<int> GetHandIds()
+        {
+            return new List<int>(new int[5]); 
+        }
+
         private bool isRoyalFlush()
         {
+            var handIds = GetHandIds();
+
+            CardSuit currentSuit = _hand[0].GetSuit();
+            if (_hand.All(card => card.GetSuit() == currentSuit) && 
+                _hand.Any(card => card.GetCardNumber() == CardNumber.Ten) &&
+                _hand.Any(card => card.GetCardNumber() == CardNumber.Jack) &&
+                _hand.Any(card => card.GetCardNumber() == CardNumber.Queen) &&
+                _hand.Any(card => card.GetCardNumber() == CardNumber.King) &&
+                _hand.Any(card => card.GetCardNumber() == CardNumber.Ace)
+                )
+            {
+                return true;
+            }
             return false; 
         }
 
