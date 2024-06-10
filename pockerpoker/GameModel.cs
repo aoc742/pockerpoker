@@ -31,6 +31,7 @@ namespace pockerpoker
         public event CardsUpdatedEventHandler? CardsUpdated;
         public event ScoreUpdatedEventHandler? ScoreUpdated;
         public event ResultsObtainedEventHandler? ResultsObtained;
+        public event EventHandler? GameOverTriggered;
 
         public GameModel()
         {
@@ -243,11 +244,16 @@ namespace pockerpoker
                 WinCondition = winCondition
             });
 
+            if (this._score <= 0)
+            {
+                Reset();
+            }
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            GameOverTriggered?.Invoke(this, new EventArgs());
+            Start();
         }
 
         public void Start()

@@ -6,7 +6,7 @@
         <Label 
             Text="{Binding Name}"
             TextColor="{Binding CardTextColor}"
-            FontSize="Header"
+            FontSize="Large"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </Grid>

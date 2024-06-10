@@ -20,6 +20,7 @@ namespace pockerpoker
             _gameModel.CardsUpdated += _gameModel_CardsUpdated;
             _gameModel.ScoreUpdated += _gameModel_ScoreUpdated;
             _gameModel.ResultsObtained += _gameModel_WinObtained;
+            _gameModel.GameOverTriggered += _gameModel_GameOverTriggered;
 
             _gameModel.Start();
 
@@ -56,6 +57,12 @@ namespace pockerpoker
             }, canExecute: () => { return !toggleDealDraw; });
         }
 
+        private void _gameModel_GameOverTriggered(object? sender, EventArgs e)
+        {
+            GameOver = "Game Over";
+            DealDrawBtn = "Start New Game";
+        }
+
         private void _gameModel_WinObtained(object sender, ResultsObtainedEventArgs e)
         {
             WinLoss = e.WinLoss ? "Win: " + e.WinCondition.ToString() : "Loss";
@@ -66,7 +73,7 @@ namespace pockerpoker
             this.Score = e.Score;
             if (e.ScoreChange > 0)
             {
-                ScoreChange = $"Score change: {e.ScoreChange}";
+                ScoreChange = $" (+{e.ScoreChange})";
             }
         }
 
@@ -77,6 +84,20 @@ namespace pockerpoker
             Card3 = new PlayingCardViewModel(e.NewCards.ToList()[2]);
             Card4 = new PlayingCardViewModel(e.NewCards.ToList()[3]);
             Card5 = new PlayingCardViewModel(e.NewCards.ToList()[4]);
+        }
+
+        private string _gameOver = string.Empty;
+        public string GameOver
+        {
+            get
+            {
+                return _gameOver;
+            }
+            set
+            {
+                this._gameOver = value;
+                OnPropertyChanged(nameof(GameOver));
+            }
         }
 
         // Represents how much the score changes after a round
@@ -326,6 +347,8 @@ namespace pockerpoker
         [RelayCommand]
         private void OnDealDrawBtnClicked()
         {
+            GameOver = string.Empty;
+
             if (toggleDealDraw)
             {
                 _gameModel.Deal();

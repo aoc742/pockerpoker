@@ -36,6 +36,7 @@ namespace pockerpoker
         public event CardsUpdatedEventHandler CardsUpdated;
         public event ScoreUpdatedEventHandler ScoreUpdated;
         public event ResultsObtainedEventHandler ResultsObtained;
+        public event EventHandler GameOverTriggered;
 
         void Start();
 
