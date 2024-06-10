@@ -8,7 +8,11 @@ namespace pockerpoker
 {
     public class ResultsObtainedEventArgs : EventArgs
     {
-        public bool WinLoss { get; set; } // Win = True, Loss = False
+        /// <summary>
+        /// Win = True, Loss = False
+        /// </summary>
+        public bool WinLoss { get; set; } 
+        public WinCondition WinCondition { get; set; }
         public IEnumerable<PlayingCardModel> WinningCards { get; set; } = new List<PlayingCardModel>();
     }
 

@@ -58,7 +58,7 @@ namespace pockerpoker
 
         private void _gameModel_WinObtained(object sender, ResultsObtainedEventArgs e)
         {
-            WinLoss = e.WinLoss ? "Win" : "Loss";
+            WinLoss = e.WinLoss ? "Win: " + e.WinCondition.ToString() : "Loss";
         }
 
         private void _gameModel_ScoreUpdated(object sender, ScoreUpdatedEventArgs e)

@@ -6,6 +6,20 @@ using System.Threading.Tasks;
 
 namespace pockerpoker
 {
+    public enum WinCondition
+    {
+        Loss = 0,
+        JacksOrBetter = 5,
+        TwoPair = 10,
+        ThreeOfAKind = 15,
+        Straight = 20,
+        Flush = 25,
+        FullHouse = 40,
+        FourOfAKind = 125,
+        StraightFlush = 250,
+        RoyalFlush = 5000
+    }
+
     class GameModel : IGameplay
     {
         private List<PlayingCardModel> _deck = new List<PlayingCardModel>(); // 52 card deck
@@ -53,24 +67,29 @@ namespace pockerpoker
 
         private bool isStraightFlush()
         {
-            return false;
+            return isStraight() && isFlush();
         }
 
         private bool is4OfAKind()
-        {  
-            CardNumber firstCard = _hand[0].GetCardNumber();
-            CardNumber secondCard = _hand[1].GetCardNumber();
-            if (_hand.Count(card => card.CardNumber == firstCard) >= 4 ||
-                _hand.Count(card => card.CardNumber == secondCard) >= 4
-                )
+        {
+            var groups = _hand.GroupBy(x => x.GetCardNumber());
+
+            if (groups.Count(groups => groups.Count() == 4) > 0)
             {
                 return true;
             }
-            return false; 
+            return false;
         }
 
         private bool isFullHouse()
         {
+            var groups = _hand.GroupBy(x => x.GetCardNumber());
+
+            if (groups.Count(groups => groups.Count() == 2) == 1 && 
+                groups.Count(groups => groups.Count() == 3) == 1)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -85,16 +104,49 @@ namespace pockerpoker
 
         private bool isStraight()
         {
+            if (_hand.Count(card => card.GetCardNumber() == CardNumber.Ace) > 1) return false;
+
+            int maxNumber = (int)_hand.Max(card => card.GetCardNumber());
+            int minNumber = (int)_hand.Min(card => card.GetCardNumber());
+
+            // Handle Ace as min and max value
+            if (minNumber == 0)
+            {
+                maxNumber = 13;
+                // Get next min value that isn't an Ace
+                minNumber = (int)_hand.Where(x => x.GetCardNumber() > 0).Min(card => card.GetCardNumber());
+            }
+
+            // if max-min=4 and all cards are unique
+            if (maxNumber - minNumber == 4 && 
+                _hand.DistinctBy(x => x.GetCardNumber()).Count() == _hand.Count())
+            {
+                return true;
+            }
+
             return false;
         }
 
         private bool is3OfAKind()
         {
+            var groups = _hand.GroupBy(x => x.GetCardNumber());
+
+            if (groups.Count(groups => groups.Count() == 3) > 0)
+            {
+                return true;
+            }
             return false;
         }
 
         private bool is2Pair()
         {
+            var groups = _hand.GroupBy(x => x.GetCardNumber());
+
+            if (groups.Count(groups => groups.Count() == 2) == 2)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -111,18 +163,18 @@ namespace pockerpoker
             return false;
         }
 
-        private int calculateScore()
+        private WinCondition calculateScore()
         {
-            if (isRoyalFlush())     return 5000;
-            if (isStraightFlush())  return 250;
-            if (is4OfAKind())       return 125;
-            if (isFullHouse())      return 40;
-            if (isFlush())          return 25;
-            if (isStraight())       return 20;
-            if (is3OfAKind())       return 15;
-            if (is2Pair())          return 10;
-            if (isJacksOrBetter())  return 5;
-                                    return 0;
+            if (isRoyalFlush())     return WinCondition.RoyalFlush;
+            if (isStraightFlush())  return WinCondition.StraightFlush;
+            if (is4OfAKind())       return WinCondition.FourOfAKind;
+            if (isFullHouse())      return WinCondition.FullHouse;
+            if (isFlush())          return WinCondition.Flush;
+            if (isStraight())       return WinCondition.Straight;
+            if (is3OfAKind())       return WinCondition.ThreeOfAKind;
+            if (is2Pair())          return WinCondition.TwoPair;
+            if (isJacksOrBetter())  return WinCondition.JacksOrBetter;
+                                    return WinCondition.Loss;
         }
 
         private void Shuffle<T>(IList<T> values)
@@ -179,15 +231,16 @@ namespace pockerpoker
 
         public void EndOfTurn()
         {
-            int scoreChange = calculateScore();
+            WinCondition winCondition = calculateScore();
+            int scoreChange = (int)winCondition;
             this._score += scoreChange;
 
             ScoreUpdated?.Invoke(this, new ScoreUpdatedEventArgs() { Score = _score, ScoreChange = scoreChange });
 
-            // If not a winner
             ResultsObtained?.Invoke(this, new ResultsObtainedEventArgs()
             {
                 WinLoss = scoreChange > 0,
+                WinCondition = winCondition
             });
 
         }
