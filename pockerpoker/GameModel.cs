@@ -105,25 +105,24 @@ namespace pockerpoker
 
         private bool isStraight()
         {
-            if (_hand.Count(card => card.GetCardNumber() == CardNumber.Ace) > 1) return false;
+            // Must be 5 unique card numbers, otherwise not a straight
+            if (_hand.DistinctBy(card => card.GetCardNumber()).Count() < 5) return false;
 
-            int maxNumber = (int)_hand.Max(card => card.GetCardNumber());
-            int minNumber = (int)_hand.Min(card => card.GetCardNumber());
+            var sortedHand = _hand.OrderBy(card => card.GetCardNumber()).ToList();
+            int maxNumber = (int)sortedHand[0].GetCardNumber();
+            int minNumber = (int)sortedHand[4].GetCardNumber();
+            
+            // Ace is set to low value here
+            if (maxNumber - minNumber == 4) return true;
 
-            // Handle Ace as min and max value
+            // Now set Ace to high value then check again
             if (minNumber == 0)
             {
                 maxNumber = 13;
-                // Get next min value that isn't an Ace
-                minNumber = (int)_hand.Where(x => x.GetCardNumber() > 0).Min(card => card.GetCardNumber());
+                minNumber = (int)sortedHand[1].GetCardNumber();
             }
 
-            // if max-min=4 and all cards are unique
-            if (maxNumber - minNumber == 4 && 
-                _hand.DistinctBy(x => x.GetCardNumber()).Count() == _hand.Count())
-            {
-                return true;
-            }
+            if (maxNumber - minNumber == 4) return true;
 
             return false;
         }
